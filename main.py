@@ -16,25 +16,23 @@ seed = 0
 random.seed(0)
 pinDist = PinDist.ELLIPSE
 
-
 saved = [3, 89, 0]
 
 doSaved = False
 doWalkthrough = False
+
 
 def doDrawing(fName):
     d = Drawing(fName, pins, invertImage, invertTwine, xDim, pinDist)
     if doSaved:
         moves = saved[:lines]
         d.doDrawList(moves)
-        d.show('drawing')
-        print("SCORE:", d.fullScore())
-        if doWalkthrough:
-            d.walkthrough('drawing', moves)
     else:
         d.doDraw(lines)
-        print(d.show('drawing'))
-        print("SCORE:", d.fullScore())
+    print(d.show('drawing'))
+    print("SCORE:", d.fullScore())
+    if doWalkthrough:
+        d.walkthrough('drawing', moves)
     cv2.destroyAllWindows()
 
 

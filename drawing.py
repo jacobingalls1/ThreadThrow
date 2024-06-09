@@ -91,7 +91,7 @@ class Drawing:
         for i in range(steps):
             self.peg_order.append(self.bestScore(self.peg_order[-1]))
             print(self.peg_order[-2:])
-            print(self.stringScore(self.pathPixels(self.peg_order[-2], self.peg_order[-1])))
+            # print(self.stringScore(self.pathPixels(self.peg_order[-2], self.peg_order[-1])))
             self.drawLine(self.peg_order[-2], self.peg_order[-1])
 
     def doDrawList(self, pins):
@@ -105,7 +105,7 @@ class Drawing:
         cv2.imshow(window_name, self.final_image)
         while cv2.waitKey(0) != 27:
             continue
-        return print(self.peg_order)
+        return self.peg_order
 
     def selectLines(self, moves):
         pass # TODO: let user scroll through moves to select correct thread count

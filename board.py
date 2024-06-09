@@ -27,6 +27,9 @@ class Board:
         randy = 10 + random.random() * (self.h - 20)
         return int(randx), int(randy)
 
+    def doPinPosDensity(self, pin):
+        pass
+
     def getPin(self, pin):
         return self.pinPos[pin]
 
@@ -37,3 +40,4 @@ class Board:
 class PinDist(Enum):
     ELLIPSE = Board.doPinPosEllipse
     RANDOM = Board.doPinPosRandom
+    DENSITY = Board.doPinPosDensity
