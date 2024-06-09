@@ -7,7 +7,7 @@ import numpy as np
 
 
 class Drawing:
-    def __init__(self, image_name, pins, invert_im, invert_twine, x_dim):
+    def __init__(self, image_name, pins, invert_im, invert_twine, x_dim, pinDist):
         self.invert_twine = invert_twine
         print(image_name)
         image = cv2.imread(image_name)
@@ -25,7 +25,7 @@ class Drawing:
         self.final_image = np.zeros((self.w, self.h, 1), np.uint8)
         if not self.invert_twine:
             self.final_image += 255
-        self.board = Board(pins, self.h, self.w)
+        self.board = Board(pins, self.h, self.w, pinDist)
         self.pins = self.board.getPins()
         self.peg_order = []
         self.paths = {p: {} for p in range(len(self.pins))}
@@ -60,8 +60,9 @@ class Drawing:
         return score / (len(path))
 
     def bestScore(self, start):
-        return max([p for p in range(len(self.pins)) if p != start],
+        best = max([p for p in range(len(self.pins)) if p != start],
                    key=lambda x: self.stringScore(self.pathPixels(x, start)))
+        return best
 
     def bestStart(self):
         return max(range(len(self.pins)),
@@ -90,6 +91,7 @@ class Drawing:
         for i in range(steps):
             self.peg_order.append(self.bestScore(self.peg_order[-1]))
             print(self.peg_order[-2:])
+            print(self.stringScore(self.pathPixels(self.peg_order[-2], self.peg_order[-1])))
             self.drawLine(self.peg_order[-2], self.peg_order[-1])
 
     def doDrawList(self, pins):
@@ -100,10 +102,13 @@ class Drawing:
         print(length / self.w)
 
     def show(self, window_name):
-        print(self.peg_order)
         cv2.imshow(window_name, self.final_image)
         while cv2.waitKey(0) != 27:
             continue
+        return print(self.peg_order)
+
+    def selectLines(self, moves):
+        pass # TODO: let user scroll through moves to select correct thread count
 
     def walkthrough(self, window_name, pins):
         self.peg_order = pins
@@ -123,3 +128,14 @@ class Drawing:
                 continue
             length += self.drawLineWalkthrough(pins[i], pins[i+1], False)
             print(length / self.w)
+
+    def fullScore(self):
+        if not self.invert_twine:
+            inkLined = np.sum(self.image - self.imageCopy)
+        else:
+            inkLined = np.sum(self.imageCopy - self.image)
+        lengthString = 0
+        for i in range(len(self.peg_order) - 1):
+            lengthString += len(self.pathPixels(self.peg_order[i], self.peg_order[i+1]))
+        return inkLined / lengthString
+
